@@ -1,0 +1,23 @@
+# Copyright 2023 brobeson
+
+name: Build & Test
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+
+# From https://stackoverflow.com/a/72408109
+# Create a group from the PR number, or the branch/tag name (if not a PR).
+# Cancel in-progress runs if the PR, branch, or tag is updated.
+concurrency:
+  group:
+    ${{github.workflow}}-${{github.event.pull_request.number || github.ref}}
+  cancel-in-progress: true
+
+jobs:
+  staticAnalysis:
+    name: Code Quality
+    uses: brobeson/brobeson/.github/workflows/support_files.yaml@reusable_workflows
+  build:
+    name: Build & Test
+    uses: brobeson/brobeson/.github/workflows/typescript.yaml@reusable_workflows
